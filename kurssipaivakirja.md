@@ -1,0 +1,1 @@
+Kurssipäiväkirjan sisältö yllä
