@@ -1,119 +1,207 @@
 <!DOCTYPE html>
-<html lang="fi">
-<head>
-    <meta charset="UTF-8">
-    <title>LLM-kääntäjä</title>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HTML Localization Tool</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <div class="container mx-auto p-4">
+      <div class="flex flex-wrap -mx-3">
+        <!-- Left Column -->
+        <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0 h-[600px]">
+          <label for="textarea" class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Paste HTML</label>
+          <textarea
+            id="textarea"
+            rows="10"
+            class="resize-y appearance-none block w-full h-1/2 bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+          ></textarea>
+          <label for="textarea-2" class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Localized HTML</label>
+          <textarea
+            id="textarea-2"
+            rows="10"
+            class="resize-y appearance-none block w-full h-1/2 bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+          ></textarea>
+        </div>
 
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Roboto', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(135deg, #6a11cb, #2575fc);
-        }
-
-        .container {
-            background: white;
-            padding: 40px;
-            border-radius: 25px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
-            max-width: 550px;
-            width: 90%;
-            text-align: center;
-        }
-
-        h1 {
-            color: #2575fc;
-            margin-bottom: 30px;
-        }
-
-        label {
-            display: block;
-            margin-top: 15px;
-            font-weight: 500;
-            color: #004d40;
-        }
-
-        select, textarea {
-            width: 100%;
-            padding: 12px;
-            border-radius: 12px;
-            border: 1px solid #ccc;
-            margin-top: 8px;
-            font-size: 16px;
-        }
-
-        button {
-            margin-top: 20px;
-            padding: 12px;
-            width: 100%;
-            border-radius: 12px;
-            border: none;
-            background: linear-gradient(135deg, #6a11cb, #2575fc);
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-        }
-
-        .result {
-            margin-top: 25px;
-            background: #f3f3f3;
-            padding: 15px;
-            border-radius: 12px;
-        }
-
-        .license {
-            margin-top: 20px;
-            font-size: 12px;
-            color: #777;
-        }
-
-        .footer-note {
-            font-size: 12px;
-            color: #555;
-            font-style: italic;
-        }
-    </style>
-</head>
-
-<body>
-<div class="container">
-
-    <h1>LLM-avusteinen kääntäjä</h1>
-
-    <form method="post">
-        <label>Valkkaa kieli tästä:</label>
-        <select name="kieli">
-            <option value="ruotsi">🇸🇪 Ruotsi</option>
-            <option value="englanti">🇬🇧 Englanti</option>
-            <option value="espanja">🇪🇸 Espanja</option>
-        </select>
-
-        <label>Syötä teksti:</label>
-        <textarea name="teksti" rows="6"></textarea>
-
-        <button type="submit">Test your might!</button>
-    </form>
-
-    {% if kaannos %}
-    <div class="result">
-        <strong>Käännös:</strong><br>
-        {{ kaannos }}
+        <!-- Right Column -->
+        <div class="w-full md:w-1/2 px-3 h-[635px] relative">
+          <label for="textarea" class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Preview</label>
+          <iframe id="iframe" class="w-full h-[610px] border border-solid border-gray-400"></iframe>
+          <input type="checkbox" id="scroll-to-index" name="scroll-to-index" class="mt-3" /> <label for="scroll-to-index">Scroll to index after focusing an input</label>
+        </div>
+      </div>
+      <!-- Input Column -->
+      <div class="w-full mt-12 max-h-[600px] overflow-y-scroll">
+        <div class="mb-4">
+          <label for="title" class="block tracking-wide text-gray-700 text-xs font-bold mb-2">Page Title</label>
+          <input
+              type="text"
+              id="title"
+              oninput="updateTitle(event)"
+              class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+          />
+        </div>
+        <div class="mb-4">
+          <label for="description" class="block tracking-wide text-gray-700 text-xs font-bold mb-2">Page Description</label>
+          <input
+              type="text"
+              id="description"
+              oninput="updateDescription(event)"
+              class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+          />
+        </div>
+        <!-- Label and Input Pair 1 -->
+        <div id="input-wrapper"></div>
+        <!-- Add more labels and inputs as needed -->
+      </div>
     </div>
-    {% endif %}
+    <script>
+      let bodyTextNodes = [];
+      let clonedTextNodes = [];
+      let titleNode = undefined;
+      let descriptionNode = undefined;
+      function getTextNodes(node) {
+        const textNodes = [];
 
-    <div class="license">MIT License © 2025 Sergey</div>
-    <div class="footer-note">Päivityksiä säännöllisesti joka perjantai</div>
+        function getTextNodesRecursively(node) {
+          if (node.nodeType === Node.TEXT_NODE) {
+            textNodes.push(node);
+          } else {
+            for (var i = 0; i < node.childNodes.length; i++) {
+              getTextNodesRecursively(node.childNodes[i]);
+            }
+          }
+        }
 
-</div>
-</body>
+        getTextNodesRecursively(node);
+
+        return textNodes;
+      }
+
+      function updateText(event, index) {
+        if (!event.target.value) {
+          bodyTextNodes[index].textContent = clonedTextNodes[index];
+        } else {
+          bodyTextNodes[index].textContent = event.target.value;
+        }
+        const textarea2 = document.getElementById("textarea-2");
+        const iframe = document.getElementById("iframe");
+        textarea2.value = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">\n' + iframe.contentDocument.body.parentElement.outerHTML;
+        localStorage.setItem("inputs", JSON.stringify(bodyTextNodes.map((node) => node.textContent)));
+      }
+
+      function updateTitle(event) {
+        if (!event.target.value) {
+          titleNode.textContent = document.querySelector('label[for=title]').textContent;
+        } else {
+          titleNode.textContent = event.target.value;
+        }
+        const textarea2 = document.getElementById("textarea-2");
+        const iframe = document.getElementById("iframe");
+        textarea2.value = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">\n' + iframe.contentDocument.body.parentElement.outerHTML;
+        localStorage.setItem("title", titleNode.textContent);
+      }
+
+      function updateDescription(event) {
+        if (!event.target.value) {
+          descriptionNode.setAttribute('content', document.querySelector('label[for=description]').textContent);
+        } else {
+          descriptionNode.setAttribute('content', event.target.value);
+        }
+        const textarea2 = document.getElementById("textarea-2");
+        const iframe = document.getElementById("iframe");
+        textarea2.value = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">\n' + iframe.contentDocument.body.parentElement.outerHTML;
+        localStorage.setItem("description", descriptionNode.getAttribute('content'));
+      }
+
+      function focusNode(index) {
+        const isFocusEnabled = document.getElementById('scroll-to-index').checked;
+        if (isFocusEnabled) {
+          const node = bodyTextNodes[index];
+          node.parentNode.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+      document.addEventListener("DOMContentLoaded", function () {
+        const textarea = document.getElementById("textarea");
+        const existingHtml = localStorage.getItem("html");
+        if (existingHtml) {
+          textarea.value = existingHtml;
+          const iframe = document.getElementById("iframe");
+          iframe.srcdoc = existingHtml;
+          iframe.onload = function () {
+            onIframeLoad(iframe);
+            const existingInputs = localStorage.getItem("inputs");
+            if (existingInputs) {
+                JSON.parse(existingInputs).forEach((input, index) => {
+                    bodyTextNodes[index].textContent = input;
+                    if (bodyTextNodes[index].textContent !== clonedTextNodes[index]) {
+                        document.getElementById('input' + index).value = input;
+                    }
+                })
+            }
+            const existingTitle = localStorage.getItem('title');
+            if (existingTitle) {
+              titleNode.textContent = existingTitle;
+              if (titleNode.textContent !== document.querySelector('label[for=title]').textContent) {
+                document.getElementById('title').value = existingTitle;
+              }
+            }
+            const existingDescription = localStorage.getItem('description');
+            if (existingDescription) {
+              descriptionNode.setAttribute('content', existingDescription);
+              if (descriptionNode.getAttribute('content') !== document.querySelector('label[for=description]').value) {
+                document.getElementById('description').value = existingDescription;
+              }
+            }
+            const textarea2 = document.getElementById("textarea-2");
+            textarea2.value = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">\n' + iframe.contentDocument.body.parentElement.outerHTML;
+          };
+        }
+
+        textarea.addEventListener("input", function (event) {
+          const html = event.target.value;
+          localStorage.setItem("html", html);
+          const iframe = document.getElementById("iframe");
+          iframe.srcdoc = html;
+          iframe.onload = function () {
+            onIframeLoad(iframe);
+          };
+        });
+
+        function onIframeLoad(iframe) {
+          const iframeBody = iframe.contentDocument.body;
+          bodyTextNodes = getTextNodes(iframeBody).filter(
+            (node) => node.textContent.trim().length > 0 && node.parentNode.nodeName !== "SCRIPT"
+          );
+          clonedTextNodes = bodyTextNodes.map((node) => node.textContent);
+          titleNode = iframe.contentDocument.head.getElementsByTagName('title')[0];
+          document.querySelector('label[for=title]').innerHTML = titleNode.textContent;
+          descriptionNode = iframe.contentDocument.head.querySelector('meta[name=description]');
+          document.querySelector('label[for=description]').innerHTML = descriptionNode.getAttribute('content');
+          const inputHtml = bodyTextNodes
+            .map((node, index) => {
+              return `
+                <div class="mb-4">
+                    <label for="input${index}" class="block tracking-wide text-gray-700 text-xs font-bold mb-2">${node.textContent}</label>
+                    <input
+                        type="text"
+                        id="input${index}"
+                        oninput="updateText(event, ${index})"
+                        onclick="focusNode(${index})"
+                        class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                    />
+                </div>`;
+            })
+            .join("");
+          const inputWrapper = document.getElementById("input-wrapper");
+          inputWrapper.innerHTML = inputHtml;
+          const textarea2 = document.getElementById("textarea-2");
+          textarea2.value = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">\n' + iframe.contentDocument.body.parentElement.outerHTML;
+          // console.log(bodyTextNodes);
+        }
+      });
+    </script>
+  </body>
 </html>
