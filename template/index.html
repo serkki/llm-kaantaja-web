@@ -8,8 +8,8 @@
     body {
         font-family: Arial, sans-serif;
         font-weight: bold;
-        background-color: #0b3d0b; /* tumma vihreä */
-        color: #e0ffe0; /* vaalea vihreä */
+        background-color: #0b3d0b;
+        color: #e0ffe0;
         margin: 0;
         padding: 0;
         display: flex;
@@ -152,8 +152,37 @@
 
 <!-- Font Awesome Icons -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+
+<!-- Oma käännös-JS -->
 <script>
-    // Täällä voidaan lisätä JS käännöstoiminnolle
+const fromText = document.querySelector('.from-text');
+const toText = document.querySelector('.to-text');
+const translateBtn = document.querySelector('button');
+const fromSelect = document.querySelector('.from select');
+const toSelect = document.querySelector('.to select');
+
+translateBtn.addEventListener('click', () => {
+    const text = fromText.value.trim();
+    if (!text) return alert('Kirjoita jotain käännettävää!');
+
+    const fromLang = fromSelect.value;
+    const toLang = toSelect.value;
+
+    // Demo-käännökset
+    const translations = {
+        "fi-en": { "hei": "hello", "moi": "hi", "kiitos": "thank you" },
+        "en-fi": { "hello": "hei", "hi": "moi", "thank you": "kiitos" },
+        "fi-es": { "hei": "hola", "moi": "hola", "kiitos": "gracias" },
+        "es-fi": { "hola": "hei", "gracias": "kiitos" }
+    };
+
+    const key = `${fromLang}-${toLang}`;
+    const translated = translations[key] && translations[key][text.toLowerCase()] 
+                        ? translations[key][text.toLowerCase()] 
+                        : text;
+
+    toText.value = translated;
+});
 </script>
 </body>
 </html>
