@@ -1,207 +1,159 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HTML Localization Tool</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-  </head>
-  <body>
-    <div class="container mx-auto p-4">
-      <div class="flex flex-wrap -mx-3">
-        <!-- Left Column -->
-        <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0 h-[600px]">
-          <label for="textarea" class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Paste HTML</label>
-          <textarea
-            id="textarea"
-            rows="10"
-            class="resize-y appearance-none block w-full h-1/2 bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-          ></textarea>
-          <label for="textarea-2" class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Localized HTML</label>
-          <textarea
-            id="textarea-2"
-            rows="10"
-            class="resize-y appearance-none block w-full h-1/2 bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-          ></textarea>
-        </div>
+<html lang="fi" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Kielikääntäjä</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        font-weight: bold;
+        background-color: #0b3d0b; /* tumma vihreä */
+        color: #e0ffe0; /* vaalea vihreä */
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
+    .container {
+        background-color: #003300;
+        padding: 30px;
+        border-radius: 15px;
+        width: 90%;
+        max-width: 700px;
+        box-shadow: 0 0 20px rgba(26, 41, 30, 0.836);
+    }
+    .text-input textarea {
+        width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        border: none;
+        resize: vertical;
+        margin-bottom: 15px;
+        background-color: #006600;
+        color: #e0ffe0;
+        font-family: Arial, sans-serif;
+        font-weight: bold;
+        min-height: 80px;
+    }
+    button {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        background-color: #02ca0283;
+        color: #6cf86c;
+        font-weight: bold;
+        font-size: 1.1em;
+        cursor: pointer;
+        margin-bottom: 20px;
+    }
+    button:hover {
+        background-color: #00ff00;
+    }
+    .controls {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 15px;
+        list-style: none;
+        padding: 0;
+    }
+    .controls select {
+        background-color: #013001;
+        color: #e0ffe0;
+        border: none;
+        border-radius: 6px;
+        padding: 5px;
+        font-weight: bold;
+    }
+    .controls .icons i {
+        margin-right: 10px;
+        cursor: pointer;
+        color: #00ff00;
+    }
+    .exchange i {
+        cursor: pointer;
+        color: #00ff00;
+    }
+    .footer {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 0.9em;
+        color: #aaffaa;
+    }
+    .flags {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 15px;
+        gap: 10px;
+    }
+    .flags img {
+        width: 60px;
+        height: 40px;
+        border-radius: 5px;
+        border: 1px solid #00ff00;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <h1 style="text-align:center; margin-bottom:20px;">Suomenkielinen Käännössovellus</h1>
 
-        <!-- Right Column -->
-        <div class="w-full md:w-1/2 px-3 h-[635px] relative">
-          <label for="textarea" class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Preview</label>
-          <iframe id="iframe" class="w-full h-[610px] border border-solid border-gray-400"></iframe>
-          <input type="checkbox" id="scroll-to-index" name="scroll-to-index" class="mt-3" /> <label for="scroll-to-index">Scroll to index after focusing an input</label>
-        </div>
-      </div>
-      <!-- Input Column -->
-      <div class="w-full mt-12 max-h-[600px] overflow-y-scroll">
-        <div class="mb-4">
-          <label for="title" class="block tracking-wide text-gray-700 text-xs font-bold mb-2">Page Title</label>
-          <input
-              type="text"
-              id="title"
-              oninput="updateTitle(event)"
-              class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-          />
-        </div>
-        <div class="mb-4">
-          <label for="description" class="block tracking-wide text-gray-700 text-xs font-bold mb-2">Page Description</label>
-          <input
-              type="text"
-              id="description"
-              oninput="updateDescription(event)"
-              class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-          />
-        </div>
-        <!-- Label and Input Pair 1 -->
-        <div id="input-wrapper"></div>
-        <!-- Add more labels and inputs as needed -->
-      </div>
+    <div class="text-input">
+        <textarea spellcheck="false" class="from-text" placeholder="Kirjoita teksti tähän..."></textarea>
+        <textarea spellcheck="false" readonly disabled class="to-text" placeholder="Käännös näkyy täällä"></textarea>
     </div>
-    <script>
-      let bodyTextNodes = [];
-      let clonedTextNodes = [];
-      let titleNode = undefined;
-      let descriptionNode = undefined;
-      function getTextNodes(node) {
-        const textNodes = [];
 
-        function getTextNodesRecursively(node) {
-          if (node.nodeType === Node.TEXT_NODE) {
-            textNodes.push(node);
-          } else {
-            for (var i = 0; i < node.childNodes.length; i++) {
-              getTextNodesRecursively(node.childNodes[i]);
-            }
-          }
-        }
+    <ul class="controls">
+        <li class="row from">
+            <div class="icons">
+                <i id="from-sound" class="fas fa-volume-up"></i>
+                <i id="from-copy" class="fas fa-copy"></i>
+            </div>
+            <select>
+                <option value="fi">Suomi</option>
+                <option value="en">Englanti</option>
+                <option value="es">Espanja</option>
+                <option value="sv">Ruotsi</option>
+            </select>
+        </li>
+        <li class="exchange"><i class="fas fa-exchange-alt"></i></li>
+        <li class="row to">
+            <select>
+                <option value="en">Englanti</option>
+                <option value="fi">Suomi</option>
+                <option value="es">Espanja</option>
+                <option value="sv">Ruotsi</option>
+            </select>
+            <div class="icons">
+                <i id="to-sound" class="fas fa-volume-up"></i>
+                <i id="to-copy" class="fas fa-copy"></i>
+            </div>
+        </li>
+    </ul>
 
-        getTextNodesRecursively(node);
+    <button>Käännä teksti</button>
 
-        return textNodes;
-      }
+    <div class="flags">
+        <img src="flags/finland.jpg" alt="Suomen lippu">
+        <img src="flags/sweden.jpg" alt="Ruotsin lippu">
+        <img src="flags/spain.jpg" alt="Espanjan lippu">
+        <img src="flags/uk.jpg" alt="UK lippu">
+    </div>
 
-      function updateText(event, index) {
-        if (!event.target.value) {
-          bodyTextNodes[index].textContent = clonedTextNodes[index];
-        } else {
-          bodyTextNodes[index].textContent = event.target.value;
-        }
-        const textarea2 = document.getElementById("textarea-2");
-        const iframe = document.getElementById("iframe");
-        textarea2.value = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">\n' + iframe.contentDocument.body.parentElement.outerHTML;
-        localStorage.setItem("inputs", JSON.stringify(bodyTextNodes.map((node) => node.textContent)));
-      }
+    <div class="footer">
+        &copy; yeah -> <br>
+        Copyright (c) 2025 Sergey
+    </div>
+</div>
 
-      function updateTitle(event) {
-        if (!event.target.value) {
-          titleNode.textContent = document.querySelector('label[for=title]').textContent;
-        } else {
-          titleNode.textContent = event.target.value;
-        }
-        const textarea2 = document.getElementById("textarea-2");
-        const iframe = document.getElementById("iframe");
-        textarea2.value = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">\n' + iframe.contentDocument.body.parentElement.outerHTML;
-        localStorage.setItem("title", titleNode.textContent);
-      }
-
-      function updateDescription(event) {
-        if (!event.target.value) {
-          descriptionNode.setAttribute('content', document.querySelector('label[for=description]').textContent);
-        } else {
-          descriptionNode.setAttribute('content', event.target.value);
-        }
-        const textarea2 = document.getElementById("textarea-2");
-        const iframe = document.getElementById("iframe");
-        textarea2.value = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">\n' + iframe.contentDocument.body.parentElement.outerHTML;
-        localStorage.setItem("description", descriptionNode.getAttribute('content'));
-      }
-
-      function focusNode(index) {
-        const isFocusEnabled = document.getElementById('scroll-to-index').checked;
-        if (isFocusEnabled) {
-          const node = bodyTextNodes[index];
-          node.parentNode.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      }
-      document.addEventListener("DOMContentLoaded", function () {
-        const textarea = document.getElementById("textarea");
-        const existingHtml = localStorage.getItem("html");
-        if (existingHtml) {
-          textarea.value = existingHtml;
-          const iframe = document.getElementById("iframe");
-          iframe.srcdoc = existingHtml;
-          iframe.onload = function () {
-            onIframeLoad(iframe);
-            const existingInputs = localStorage.getItem("inputs");
-            if (existingInputs) {
-                JSON.parse(existingInputs).forEach((input, index) => {
-                    bodyTextNodes[index].textContent = input;
-                    if (bodyTextNodes[index].textContent !== clonedTextNodes[index]) {
-                        document.getElementById('input' + index).value = input;
-                    }
-                })
-            }
-            const existingTitle = localStorage.getItem('title');
-            if (existingTitle) {
-              titleNode.textContent = existingTitle;
-              if (titleNode.textContent !== document.querySelector('label[for=title]').textContent) {
-                document.getElementById('title').value = existingTitle;
-              }
-            }
-            const existingDescription = localStorage.getItem('description');
-            if (existingDescription) {
-              descriptionNode.setAttribute('content', existingDescription);
-              if (descriptionNode.getAttribute('content') !== document.querySelector('label[for=description]').value) {
-                document.getElementById('description').value = existingDescription;
-              }
-            }
-            const textarea2 = document.getElementById("textarea-2");
-            textarea2.value = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">\n' + iframe.contentDocument.body.parentElement.outerHTML;
-          };
-        }
-
-        textarea.addEventListener("input", function (event) {
-          const html = event.target.value;
-          localStorage.setItem("html", html);
-          const iframe = document.getElementById("iframe");
-          iframe.srcdoc = html;
-          iframe.onload = function () {
-            onIframeLoad(iframe);
-          };
-        });
-
-        function onIframeLoad(iframe) {
-          const iframeBody = iframe.contentDocument.body;
-          bodyTextNodes = getTextNodes(iframeBody).filter(
-            (node) => node.textContent.trim().length > 0 && node.parentNode.nodeName !== "SCRIPT"
-          );
-          clonedTextNodes = bodyTextNodes.map((node) => node.textContent);
-          titleNode = iframe.contentDocument.head.getElementsByTagName('title')[0];
-          document.querySelector('label[for=title]').innerHTML = titleNode.textContent;
-          descriptionNode = iframe.contentDocument.head.querySelector('meta[name=description]');
-          document.querySelector('label[for=description]').innerHTML = descriptionNode.getAttribute('content');
-          const inputHtml = bodyTextNodes
-            .map((node, index) => {
-              return `
-                <div class="mb-4">
-                    <label for="input${index}" class="block tracking-wide text-gray-700 text-xs font-bold mb-2">${node.textContent}</label>
-                    <input
-                        type="text"
-                        id="input${index}"
-                        oninput="updateText(event, ${index})"
-                        onclick="focusNode(${index})"
-                        class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                    />
-                </div>`;
-            })
-            .join("");
-          const inputWrapper = document.getElementById("input-wrapper");
-          inputWrapper.innerHTML = inputHtml;
-          const textarea2 = document.getElementById("textarea-2");
-          textarea2.value = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">\n' + iframe.contentDocument.body.parentElement.outerHTML;
-          // console.log(bodyTextNodes);
-        }
-      });
-    </script>
-  </body>
+<!-- Font Awesome Icons -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+<script>
+    // Täällä voidaan lisätä JS käännöstoiminnolle
+</script>
+</body>
 </html>
