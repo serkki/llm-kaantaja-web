@@ -1,119 +1,59 @@
-<!DOCTYPE html>
-<html lang="fi">
-<head>
-    <meta charset="UTF-8">
-    <title>LLM-kääntäjä</title>
+from flask import Flask, render_template, request, jsonify
+import re
+from num2words import num2words
 
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+app = Flask(__name__)
 
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Roboto', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(135deg, #6a11cb, #2575fc);
-        }
+# Saatavilla olevat kielet
+KIELET = ["ruotsi", "englanti", "espanja"]
 
-        .container {
-            background: white;
-            padding: 40px;
-            border-radius: 25px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
-            max-width: 550px;
-            width: 90%;
-            text-align: center;
-        }
+def numbers_to_words(text, lang="fi"):
+    """
+    Muuntaa kaikki numerot tekstissä sanoiksi.
+    Esim. 'Minulla on 3 koiraa' -> 'Minulla on kolme koiraa'
+    """
+    return re.sub(r'\d+', lambda m: num2words(int(m.group()), lang=lang), text)
 
-        h1 {
-            color: #2575fc;
-            margin-bottom: 30px;
-        }
+def fake_translate(text, source, target):
+    """
+    Tämä on DEMO-käännös.
+    Oikeassa versiossa tähän tulisi OpenAI / LLM -kutsu.
+    """
+    return f"[{source} → {target}] {text}"
 
-        label {
-            display: block;
-            margin-top: 15px;
-            font-weight: 500;
-            color: #004d40;
-        }
+@app.route("/", methods=["GET", "POST"])
+def index():
+    kaannos = ""
 
-        select, textarea {
-            width: 100%;
-            padding: 12px;
-            border-radius: 12px;
-            border: 1px solid #ccc;
-            margin-top: 8px;
-            font-size: 16px;
-        }
+    if request.method == "POST":
+        kieli = request.form.get("kieli")
+        teksti = request.form.get("teksti")
 
-        button {
-            margin-top: 20px;
-            padding: 12px;
-            width: 100%;
-            border-radius: 12px;
-            border: none;
-            background: linear-gradient(135deg, #6a11cb, #2575fc);
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-        }
+        # Numerot sanoiksi (suomeksi)
+        teksti = numbers_to_words(teksti, lang="fi")
 
-        button:hover {
-            transform: translateY(-2px);
-        }
+        # Käännös (demo)
+        kaannos = fake_translate(teksti, "suomi", kieli)
 
-        .result {
-            margin-top: 25px;
-            background: #f3f3f3;
-            padding: 15px;
-            border-radius: 12px;
-        }
+    return render_template(
+        "index.html",
+        kielet=KIELET,
+        kaannos=kaannos
+    )
 
-        .license {
-            margin-top: 20px;
-            font-size: 12px;
-            color: #777;
-        }
+# AI-tekstin parannus (DEMO, ilman oikeaa API-avainta)
+@app.route("/ai-improve", methods=["POST"])
+def ai_improve():
+    data = request.get_json()
+    text = data.get("text", "")
 
-        .footer-note {
-            font-size: 12px;
-            color: #555;
-            font-style: italic;
-        }
-    </style>
-</head>
+    improved = (
+        "Parannettu teksti:\n\n"
+        + text.capitalize()
+        + "\n\n(Tässä kohtaa oikea tekoäly parantaisi tyyliä ja kielioppia.)"
+    )
 
-<body>
-<div class="container">
+    return jsonify({"improved": improved})
 
-    <h1>LLM-avusteinen kääntäjä</h1>
-
-    <form method="post">
-        <label>Valkkaa kieli tästä:</label>
-        <select name="kieli">
-            <option value="ruotsi">🇸🇪 Ruotsi</option>
-            <option value="englanti">🇬🇧 Englanti</option>
-            <option value="espanja">🇪🇸 Espanja</option>
-        </select>
-
-        <label>Syötä teksti:</label>
-        <textarea name="teksti" rows="6"></textarea>
-
-        <button type="submit">Test your might!</button>
-    </form>
-
-    {% if kaannos %}
-    <div class="result">
-        <strong>Käännös:</strong><br>
-        {{ kaannos }}
-    </div>
-    {% endif %}
-
-    <div class="license">MIT License © 2025 Sergey</div>
-    <div class="footer-note">Päivityksiä säännöllisesti joka perjantai</div>
-
-</div>
-</body>
-</html>
+if __name__ == "__main__":
+    app.run(debug=True)
