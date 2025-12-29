@@ -1,6 +1,6 @@
-# LLM-kääntäjä
+  # LLM-kääntäjä
 
-Moderni web-sovellus Flaskilla.
+Oma projekti, jossa on kääntäjä nettisivulla ja modernit käännökset sanoille ja pystyy ääntämään sanoja.
 
 ## Ominaisuudet
 - Suomi ↔ Ruotsi / Englanti / Espanja
@@ -12,3 +12,5 @@ Moderni web-sovellus Flaskilla.
 ## Käynnistys
 pip install flask num2words  
 python app.py
+
+Kansioissa lähinnä sivuston muokkaamisasetuksia ja fonttimääräyksiä joita olen tehnyt. 
