@@ -1,0 +1,167 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
+  min-height: 100vh;
+  background: #000000; /* musta tausta */
+  color: #ffffff; /* valkoinen teksti */
+}
+
+.container {
+  max-width: 690px;
+  width: 100%;
+  padding: 30px;
+  background: #111111; /* tumman musta sävy */
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0, 255, 0, 0.2); /* vihreä hehku */
+}
+
+.wrapper {
+  border-radius: 5px;
+  border: 1px solid #00cc00; /* vihreä reuna */
+}
+
+.wrapper .text-input {
+  display: flex;
+  border-bottom: 1px solid #00cc00; /* vihreä viiva */
+}
+
+.text-input .to-text {
+  border-left: 1px solid #00cc00; /* vihreä viiva */
+  border-radius: 0;
+}
+
+.text-input textarea {
+  height: 250px;
+  width: 100%;
+  border: none;
+  outline: none;
+  resize: none;
+  background: #111111; /* musta tausta kentissä */
+  color: #ffffff; /* valkoinen teksti */
+  font-size: 18px;
+  padding: 10px 15px;
+  border-radius: 5px;
+}
+
+.text-input textarea::placeholder {
+  color: #00ff00; /* vihreä placeholder */
+}
+
+.controls .row select {
+  color: #ffffff; /* valkoinen teksti */
+  border: none;
+  outline: none;
+  font-size: 18px;
+  background: #111111; /* musta select */
+  padding-left: 5px;
+}
+
+.controls .row .icons i {
+  color: #00ff00; /* vihreät ikonit */
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.controls .row .icons i:hover {
+  color: #33ff33; /* vaaleampi vihreä hoverissa */
+}
+
+.controls .exchange {
+  color: #00ff00; /* vihreä vaihtopainike */
+  cursor: pointer;
+  font-size: 16px;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.controls .exchange:hover {
+  color: #33ff33; /* hover-efekti */
+}
+
+.container button {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 5px;
+  background: #00cc00; /* vihreä nappi */
+  color: #ffffff; /* valkoinen teksti */
+  font-size: 17px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.container button:hover {
+  background: #33ff33; /* vaaleampi vihreä hoverissa */
+}
+
+.container .love {
+  font-weight: 500;
+  text-align: center;
+  padding: 5px;
+  color: #ffffff; /* valkoinen teksti footerissa */
+}
+
+a:link, a:visited {
+  color: #00ff00; /* vihreä linkki */
+  text-decoration: none;
+}
+
+a:hover {
+  color: #33ff33;
+  text-decoration: underline;
+}
+
+a:active {
+  color: #00cc00;
+  text-decoration: underline;
+}
+
+/* Scrollbar */
+.text-input textarea::-webkit-scrollbar {
+  width: 4px;
+}
+
+.text-input textarea::-webkit-scrollbar-track {
+  background: #111111;
+}
+
+.text-input textarea::-webkit-scrollbar-thumb {
+  background: #00cc00;
+  border-radius: 8px;
+}
+
+@media (max-width: 660px) {
+  .wrapper .text-input {
+    flex-direction: column;
+  }
+  .text-input .to-text {
+    border-left: 0;
+    border-top: 1px solid #00cc00;
+  }
+  .text-input textarea {
+    height: 200px;
+  }
+  .controls .row .icons {
+    display: none;
+  }
+  .container button {
+    padding: 13px;
+    font-size: 16px;
+  }
+  .controls .row select {
+    font-size: 16px;
+  }
+  .controls .exchange {
+    font-size: 14px;
+  }
+}
